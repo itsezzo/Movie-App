@@ -3,14 +3,13 @@ import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Provider } from 'react-redux';
+import { Provider, useSelector } from 'react-redux';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from '@react-native-community/blur';
 
 import { Ionicons } from '@expo/vector-icons';
 
 import Login from './screens/Login';
-// import Account from './screens/Account';
 import { colors } from './constants/colors';
 
 import { store } from './store/store';
@@ -19,29 +18,41 @@ import Search from './screens/Search';
 import Favorites from './screens/Favorites';
 import Home from './screens/Home';
 import ShowDetails from './screens/ShowDetails';
+import Logged from './screens/Logged';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function Account() {
+  const isAuthenticate = useSelector(
+    state => state.authentication.isAuthenticate
+  );
+
   return (
     <Stack.Navigator
       screenOptions={{
         headerTitleAlign: 'center',
         headerStyle: { backgroundColor: colors.primary500 },
         headerTintColor: colors.primary50,
+        contentStyle: { backgroundColor: colors.primary100 },
       }}
     >
-      <Stack.Screen
-        name='Login'
-        component={Login}
-        options={{ title: 'Log In' }}
-      />
-      <Stack.Screen
-        name='Signup'
-        component={Signup}
-        options={{ title: 'Sign Up' }}
-      />
+      {!isAuthenticate ? (
+        <>
+          <Stack.Screen
+            name='Login'
+            component={Login}
+            options={{ title: 'Log In' }}
+          />
+          <Stack.Screen
+            name='Signup'
+            component={Signup}
+            options={{ title: 'Sign Up' }}
+          />
+        </>
+      ) : (
+        <Stack.Screen name='loggedin' component={Logged} />
+      )}
     </Stack.Navigator>
   );
 }
@@ -67,6 +78,7 @@ function TabBar() {
         tabBarHideOnKeyboard: true,
         tabBarShowLabel: false,
       }}
+      sceneContainerStyle={{ backgroundColor: colors.primary100 }}
     >
       <Tab.Screen
         name='home'
@@ -133,15 +145,14 @@ export default function App() {
         <Stack.Navigator
           screenOptions={{
             headerShown: false,
+            contentStyle: { backgroundColor: colors.primary100 },
           }}
         >
-          <Stack.Screen name='Login' component={TabBar} />
+          <Stack.Screen name='Home' component={TabBar} />
           <Stack.Screen
             name='details'
             component={ShowDetails}
-            options={{
-              
-            }}
+            options={{ cardStyle: { flex: 1 } }}
           />
         </Stack.Navigator>
       </NavigationContainer>

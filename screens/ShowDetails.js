@@ -4,7 +4,7 @@ import {
   StyleSheet,
   Image,
   View,
-  SafeAreaView,
+  Text,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -20,13 +20,28 @@ import IconButton from '../components/ui/IconButton';
 export default function ShowDetails({ navigation, route }) {
   const [show, setShow] = useState();
   const favShowsId = useSelector(state => state.favoriteMovies.ids);
+  const isAuthenticate = useSelector(state => state.authentication.isAuthenticate);
   const dispatch = useDispatch();
   const id = route.params.showId;
 
   const showIsFaved = favShowsId.includes(id);
 
   function handleShowFaves() {
-    if (!showIsFaved) {
+    // if(!isAuthenticate) {
+    //   navigation.setOptions({
+    //     header: () => {
+    //       return(
+    //         <View style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: colors.primary50}}>
+    //           <Text style={{textAlign: 'center', color: colors.primary600}}>You must Log In</Text>
+    //         </View>
+    //       )
+    //     }
+    //   })
+    // }
+
+    // I've tried 
+
+    if (!showIsFaved && isAuthenticate) {
       dispatch(addMovie(id));
     } else {
       dispatch(removeMovie(id));
@@ -40,7 +55,7 @@ export default function ShowDetails({ navigation, route }) {
       headerRight: () => {
         return (
           <IconButton
-            icon={showIsFaved ? 'star' : 'star-outline'}
+            icon={showIsFaved && isAuthenticate ? 'star' : 'star-outline'}
             onPress={handleShowFaves}
             color={menuColors.shade6}
             size={24}
@@ -51,6 +66,7 @@ export default function ShowDetails({ navigation, route }) {
     });
     getShow();
   }, [getShow, handleShowFaves, navigation]);
+
   async function getShow() {
     const show = await getMovieById(id);
     setShow(show);

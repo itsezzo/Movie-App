@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Alert } from 'react-native';
 import { useDispatch } from 'react-redux';
 
@@ -7,22 +7,26 @@ import LoadingOverlay from '../components/ui/LoadingOverlay';
 
 import { logUser } from '../utils/auth';
 import { authenticate } from '../store/auth';
-// import { authContext } from '../store/auth-context';
 
-export default function Login({navigation}) {
+export default function Login({ navigation }) {
   const [isAuthentication, setIsAuthentication] = useState(false);
-  // const isAuthenticate = useSelector(state => state.authentication.isAuthenticate);
+  
+
   const dispatch = useDispatch();
-  // const authCtx = useContext(authContext);
-  // navigation.setOptions({
-  //   headerRight: 
-  // })
+  
+
+  useEffect(() => {
+  }, [isAuthentication])
+
+
   async function handlelogin({ email, password }) {
     setIsAuthentication(true);
     try {
       const token = await logUser(email, password);
       dispatch(authenticate(token));
-      console.log(token)
+      // console.log('inside Login');
+      // console.log(token);
+      navigation.replace('loggedin')
     } catch (error) {
       Alert.alert(
         'Authentication Failed!',
