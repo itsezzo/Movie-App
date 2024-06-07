@@ -1,12 +1,31 @@
 import { View, Text, Pressable, Image, StyleSheet } from 'react-native';
 import { colors, menuColors } from '../../constants/colors';
+
+import { useNavigation } from '@react-navigation/native';
+
 import IconButton from '../ui/IconButton';
 
-export default function MovieLong({ imageUri, onPress, title, rate, released, clas, type }) {
+export default function MovieLong({
+  id,
+  imageUri,
+  title,
+  rate,
+  released,
+  clas,
+  type,
+}) {
+
+  const navigation = useNavigation();
+
+  function handleDetail() {
+    navigation.navigate('details', {showId: id})
+  }
+
+
   return (
     <View style={styles.container}>
       <Pressable
-        onPress={onPress}
+        onPress={handleDetail}
         style={({ pressed }) => [
           styles.innerContainer,
           pressed && styles.pressed,
@@ -18,10 +37,10 @@ export default function MovieLong({ imageUri, onPress, title, rate, released, cl
         <View style={styles.textContainer}>
           <View style={styles.titleContainer}>
             <Text style={styles.title}>{title}</Text>
+          </View>
           <View style={styles.rateContainer}>
             <Text style={styles.rate}>{rate} / 10</Text>
             <IconButton icon='star' color={menuColors.shade3} />
-          </View>
           </View>
           <Text style={styles.text}>Released: {released}</Text>
           <Text style={styles.text}>Rated: {clas}</Text>
@@ -51,7 +70,7 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    height: 115,
+    height: '100%',
   },
   textContainer: {
     flex: 2,
@@ -64,9 +83,9 @@ const styles = StyleSheet.create({
     color: colors.primary50,
   },
   titleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    alignItems: 'center'
+    // flexDirection: 'row',
+    // justifyContent: 'space-evenly',
+    alignItems: 'center',
   },
   text: {
     fontSize: 16,
@@ -76,9 +95,11 @@ const styles = StyleSheet.create({
   },
   rateContainer: {
     flexDirection: 'row',
-    alignItems: 'center'
-},
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   rate: {
     color: menuColors.shade3,
+    // textAlign: 'center'
   },
 });

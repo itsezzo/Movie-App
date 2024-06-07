@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Provider } from 'react-redux';
 import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from '@react-native-community/blur';
 
 import { Ionicons } from '@expo/vector-icons';
 
@@ -17,6 +18,7 @@ import Signup from './screens/Signup';
 import Search from './screens/Search';
 import Favorites from './screens/Favorites';
 import Home from './screens/Home';
+import ShowDetails from './screens/ShowDetails';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -128,20 +130,20 @@ export default function App() {
     <Provider store={store}>
       <StatusBar style='light' />
       <NavigationContainer>
-        <LinearGradient
-          colors={[colors.primary100, colors.primary500]}
-          style={{ position: 'absolute', right: 0, left: 0, top: 0, height: '100%', width: '100%' }}
-          start={{ x: 0, y: 1 }}
-          end={{ x: 0, y: 1 }}
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+          }}
         >
-          <Stack.Navigator
-            screenOptions={{
-              headerShown: false,
+          <Stack.Screen name='Login' component={TabBar} />
+          <Stack.Screen
+            name='details'
+            component={ShowDetails}
+            options={{
+              
             }}
-          >
-            <Stack.Screen name='Login' component={TabBar} />
-          </Stack.Navigator>
-        </LinearGradient>
+          />
+        </Stack.Navigator>
       </NavigationContainer>
     </Provider>
   );

@@ -32,7 +32,8 @@ function AuthContent({ isLogin, onAuthenticate }) {
 
     const emV = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     
-    const emailIsValid = emV.test.email;
+    const emailIsValid = emV.test(email);
+    console.log(emailIsValid);
     const passwordIsValid = password.length > 6;
     const emailsAreEqual = email === confirmEmail;
     const passwordsAreEqual = password === confirmPassword;

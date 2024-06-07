@@ -22,7 +22,7 @@ export default function Login({navigation}) {
     try {
       const token = await logUser(email, password);
       dispatch(authenticate(token));
-      // authCtx.authenticate(token);
+      console.log(token)
     } catch (error) {
       Alert.alert(
         'Authentication Failed!',

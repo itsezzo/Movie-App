@@ -1,49 +1,64 @@
-import { View, Text, StyleSheet, TextInput } from 'react-native';
+import { useEffect, useState } from 'react';
+import { StyleSheet, ScrollView } from 'react-native';
 
-import IconButton from '../components/ui/IconButton';
-import { getMovieByTitle, search } from '../utils/movies';
-import { colors } from '../constants/colors';
-import MovieLong from '../components/movies/MovieLong';
-import MovieTall from '../components/movies/MovieTall';
+import ReversedList from '../components/movies/ReversedList';
+
+import { getShowByTitle } from '../utils/movies';
+import { colors, menuColors } from '../constants/colors';
+
+import { allLists } from '../models/data';
 
 export default function Home() {
-  async function handleInput(enteredText) {
-    try {
-      await search(enteredText);
-    } catch (error) {
-      throw error;
+  const [shows, setShows] = useState([]);
+  useEffect(() => {
+    getShows(allLists)
+  }, []);
+
+  async function getShows(arr) {
+    const bigList = [];
+    for (let i = 0; i < 4; i++) {
+      const zist = await Promise.all(arr[i].map(async item => {
+        const result = await getShowByTitle(item);
+        const modElem = {
+          id: result.imdbID,
+          title: result.Title,
+          imageUri: result.Poster,
+          rate: result.imdbRating,
+        };
+        return modElem;
+      }))
+      bigList.push(zist);
     }
-    // getMovieByTitle(enteredText);
-    // console.log(movie)
+
+    setShows(bigList);
   }
+
   return (
-    <View>
-      <Text>Home Page</Text>
-      <TextInput style={styles.input} onChangeText={handleInput} />
-      <IconButton icon='exit-outline' color={colors.primary300} size={30}>
-        on Click
-      </IconButton>
-      <MovieLong
-        imageUri='https://m.media-amazon.com/images/M/MV5BNGVjNWI4ZGUtNzE0MS00YTJmLWE0ZDctN2ZiYTk2YmI3NTYyXkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_SX300.jpg'
-        title='Joker'
-        clas='R+'
-        released={2019}
-        type='Movie'
-        rate={8.4}
+    <ScrollView style={styles.container}>
+      <ReversedList title='Top 10 Movies' movies={shows[0]} />
+      <ReversedList
+        title='Top Box Office'
+        movies={shows[1]}
+        bgc={{ backgroundColor: menuColors.shade2 }}
       />
-      <MovieTall
-        imageUri='https://m.media-amazon.com/images/M/MV5BNGVjNWI4ZGUtNzE0MS00YTJmLWE0ZDctN2ZiYTk2YmI3NTYyXkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_SX300.jpg'
-        title='Joker'
-        clas='R+'
-        released={2019}
-        type='Movie'
-        rate={8.4}
+      <ReversedList
+        title='Top 10 TV-Shows'
+        movies={shows[2]}
+        bgc={{ backgroundColor: menuColors.shade3 }}
       />
-    </View>
+      <ReversedList
+        title='Recent TV-Shows'
+        movies={shows[3]}
+        bgc={{ backgroundColor: menuColors.shade4 }}
+      />
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    marginBottom: 48,
+  },
   input: {
     backgroundColor: colors.primary300,
     margin: 20,
